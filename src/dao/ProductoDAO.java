@@ -1,6 +1,7 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -19,8 +20,8 @@ private ConexionBD conexion;
 		this.conexion = new ConexionBD();
 	}
 	//*******************************************************************************************************
-		//FUNCIÓN MOSTRAR
-		public ArrayList <Producto> obtenerProductos()
+		//FUNCIÓN MOSTRAR DENOMINACIÓN DEL PRODUCTO
+		public ArrayList <Producto> obtenerDenominacion()
 		{
 			//Obtenemos conexion a la base de datos.
 			Connection con = conexion.getConexion();
@@ -31,20 +32,16 @@ private ConexionBD conexion;
 			
 			try
 			{
-				sSQL = "SELECT * FROM productos";
-				consulta = con.createStatement();
+				sSQL = "SELECT DISTINCT denominacion FROM productos ORDER BY denominacion;";
+				consulta = con.prepareStatement(sSQL);
 				resultado = consulta.executeQuery(sSQL);
 				
 				//Bucle para recorrer las filas que devuelve la consulta
 				while(resultado.next())
 				{
-					int iRef = resultado.getInt("Ref");
-					String sDescripcion = resultado.getString("descripcion");
 					String sDenominacion = resultado.getString("denominacion");
-					String sModelo = resultado.getString("modelo");
-					int iPersonas = resultado.getInt("personas");
-					
-					Producto prod = new Producto(iRef, sDescripcion, sDenominacion, sModelo, iPersonas);
+				
+					Producto prod = new Producto(0, sDenominacion, sDenominacion, sDenominacion, 0);
 					lista.add(prod);
 				}
 			}
@@ -68,4 +65,53 @@ private ConexionBD conexion;
 			}
 			return lista;	
 		}
+		
+		// ***********************************************************************************************************************
+		
+		//FUNCIÓN MOSTRAR DENOMINACIÓN DEL PRODUCTO
+				public ArrayList <Producto> obtenerProductos(String denominacion)
+				{
+					//Obtenemos conexion a la base de datos.
+					Connection con = conexion.getConexion();
+					PreparedStatement pstmt = null;
+					ResultSet rs2 = pstmt.executeQuery(sSQL2);
+					ArrayList<Producto> lista2 = new ArrayList<Producto>();
+					String sSQL2;
+					
+					try
+					{
+						sSQL2 = "SELECT descripcion FROM productos WHERE denominacion = ?;";
+						pstmt = con.prepareStatement(sSQL2);
+						pstmt.setString(1, denominacion);
+						
+						
+						//Bucle para recorrer las filas que devuelve la consulta
+						while(rs2.next())
+						{
+							String sDescripcion = rs2.getString("descripcion");
+							
+							Producto produc = new Producto(0, sDescripcion, sDescripcion, sDescripcion, 0);
+							lista2.add(produc);
+						}
+					}
+					catch (SQLException e)
+					{
+						System.out.println("Error al realizar la consulta: " + e.getMessage());
+					}
+					finally
+					{
+						try
+						{
+							rs2.close();
+							pstmt.close();
+							conexion.desconectar();
+						}
+						catch (SQLException e)
+						{
+							System.out.println("Error al liberar recursos: " + e.getMessage());
+						}
+						
+					}
+					return lista2;	
+				}
 }

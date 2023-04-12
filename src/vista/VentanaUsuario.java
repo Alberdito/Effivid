@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import conexion.ConexionBD;
 import dao.PersonaDAO;
 import dao.ProductoDAO;
 import modelo.Persona;
@@ -18,12 +19,25 @@ import javax.swing.SwingConstants;
 import javax.swing.JComboBox;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import javax.swing.DefaultComboBoxModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class VentanaUsuario extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textRefer;
+private ConexionBD conexion;
+	
+	
 
 	/**
 	 * Launch the application.
@@ -46,48 +60,60 @@ public class VentanaUsuario extends JFrame {
 	 */
 	public VentanaUsuario() 
 	{
-		JComboBox cbProducto = new JComboBox();
-		JComboBox cbModelo = new JComboBox();
 		
-		addWindowListener(new WindowAdapter() 
+	this.conexion = new ConexionBD();
+		
+		
+//RELLENADO COMBOBOX PRODUCTO
+		JComboBox cbProducto = new JComboBox();
+			
+		
+		
+		ArrayList<Producto> lista = new ArrayList<Producto>();
+		
+		ProductoDAO productoDAO = new ProductoDAO();
+		lista = productoDAO.obtenerDenominacion();
+		
+		cbProducto.removeAllItems();
+		
+		for(Producto producto:lista)
 		{
-			@Override
-			public void windowActivated(WindowEvent e) 
+			String denominacion = producto.getDenominacion();
+			
+			cbProducto.addItem(denominacion);
+		}
+		cbProducto.setSelectedIndex(0);
+		
+		cbProducto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
 			{
+				String sDenominacion = cbProducto.getSelectedItem().toString();
+			
+			//RELLENADO COMBOBOX PRODUCTO
+				JComboBox cbModelo = new JComboBox();
+				cbModelo.setFont(new Font("Tahoma", Font.PLAIN, 13));
+				cbModelo.setBounds(121, 298, 322, 31);
+				contentPane.add(cbModelo);
 				
-				//Rellenar ComboBox Producto
-				ArrayList<Producto> lista = new ArrayList<Producto>();
-				
-				ProductoDAO productoDAO = new ProductoDAO();
-				lista = productoDAO.obtenerProductos();
-				
-				cbProducto.removeAllItems();
-				
-				for(Producto producto:lista)
-				{
-					String nombre = producto.getDescripcion();
-					
-					cbProducto.addItem(nombre);
-				}
-				cbProducto.setSelectedIndex(0);
-				
-				//Rellenar ComboBox Modelo
 				ArrayList<Producto> lista2 = new ArrayList<Producto>();
 				
 				ProductoDAO producDAO = new ProductoDAO();
-				lista2 = producDAO.obtenerProductos();
+				lista2 = producDAO.obtenerProductos(sDenominacion);
 				
 				cbModelo.removeAllItems();
 				
 				for(Producto produc:lista2)
 				{
-					String denominacion = produc.getDenominacion();
+					String descripcion = produc.getDescripcion();
 					
-					cbModelo.addItem(denominacion);
+					cbModelo.addItem(descripcion);
 				}
 				cbModelo.setSelectedIndex(0);
 			}
+			
 		});
+	
+		
 		setTitle("Visualización de videos");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 478, 563);
@@ -97,6 +123,7 @@ public class VentanaUsuario extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+	
 		textRefer = new JTextField();
 		textRefer.setToolTipText("Inserte el número de referencia del producto sobre el que buscar vídeo");
 		textRefer.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -128,15 +155,12 @@ public class VentanaUsuario extends JFrame {
 		lblModelo.setBounds(40, 303, 71, 20);
 		contentPane.add(lblModelo);
 		
-		
 		cbProducto.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		cbProducto.setBounds(121, 223, 322, 31);
 		contentPane.add(cbProducto);
+
 		
 		
-		cbModelo.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		cbModelo.setBounds(121, 298, 322, 31);
-		contentPane.add(cbModelo);
 	}
 	
 	
