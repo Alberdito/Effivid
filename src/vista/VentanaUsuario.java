@@ -37,23 +37,6 @@ public class VentanaUsuario extends JFrame {
 	private JTextField textRefer;
 private ConexionBD conexion;
 	
-	
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VentanaUsuario frame = new VentanaUsuario();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
@@ -63,55 +46,63 @@ private ConexionBD conexion;
 		
 	this.conexion = new ConexionBD();
 		
-		
-//RELLENADO COMBOBOX PRODUCTO
-		JComboBox cbProducto = new JComboBox();
+	//DEFINIR COMBOBOX PRODUCTO
+			JComboBox cbProducto = new JComboBox();
+			cbProducto.setFont(new Font("Tahoma", Font.PLAIN, 13));
+			cbProducto.setBounds(121, 223, 322, 31);
 			
-		
-		
-		ArrayList<Producto> lista = new ArrayList<Producto>();
-		
-		ProductoDAO productoDAO = new ProductoDAO();
-		lista = productoDAO.obtenerDenominacion();
-		
-		cbProducto.removeAllItems();
-		
-		for(Producto producto:lista)
-		{
-			String denominacion = producto.getDenominacion();
 			
-			cbProducto.addItem(denominacion);
-		}
-		cbProducto.setSelectedIndex(0);
-		
-		cbProducto.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) 
+			ArrayList<Producto> lista = new ArrayList<Producto>();
+			
+			ProductoDAO productoDAO = new ProductoDAO();
+			lista = productoDAO.obtenerDenominacion();
+					
+			cbProducto.removeAllItems();
+					
+			for(Producto producto:lista)
 			{
-				String sDenominacion = cbProducto.getSelectedItem().toString();
+				String denominacion = producto.getDenominacion();
+				cbProducto.addItem(denominacion);
+			}
+			cbProducto.setSelectedIndex(0);
+			cbProducto.repaint();
 			
-			//RELLENADO COMBOBOX PRODUCTO
-				JComboBox cbModelo = new JComboBox();
-				cbModelo.setFont(new Font("Tahoma", Font.PLAIN, 13));
-				cbModelo.setBounds(121, 298, 322, 31);
-				contentPane.add(cbModelo);
-				
+		//DEFINIR COMBOBOX MODELO
+			JComboBox cbModelo = new JComboBox();
+			cbModelo.setFont(new Font("Tahoma", Font.PLAIN, 13));
+			cbModelo.setBounds(121, 298, 322, 31);
+			
+		//ASOCIAR ACTIONLISTENER AL COMBOBOX PRODUCTO
+			cbProducto.addActionListener(new ActionListener() 
+			{
+				public void actionPerformed(ActionEvent e) 
+				{
+					String sDenominacion = cbProducto.getSelectedItem().toString();
+								
+		//VACIAR Y RELLENAR COMBOBOX MODELO
+				cbModelo.removeAllItems();
 				ArrayList<Producto> lista2 = new ArrayList<Producto>();
-				
 				ProductoDAO producDAO = new ProductoDAO();
 				lista2 = producDAO.obtenerProductos(sDenominacion);
-				
-				cbModelo.removeAllItems();
-				
+							
 				for(Producto produc:lista2)
 				{
 					String descripcion = produc.getDescripcion();
-					
 					cbModelo.addItem(descripcion);
 				}
 				cbModelo.setSelectedIndex(0);
+				cbModelo.repaint();
 			}
-			
-		});
+			});
+		
+		
+				
+		
+				
+		
+		
+	
+		
 	
 		
 		setTitle("Visualización de videos");
@@ -155,12 +146,8 @@ private ConexionBD conexion;
 		lblModelo.setBounds(40, 303, 71, 20);
 		contentPane.add(lblModelo);
 		
-		cbProducto.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		cbProducto.setBounds(121, 223, 322, 31);
 		contentPane.add(cbProducto);
-
-		
-		
+		contentPane.add(cbModelo);
 	}
 	
 	

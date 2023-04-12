@@ -83,7 +83,7 @@ private ConexionBD conexion;
 						sSQL2 = "SELECT descripcion FROM productos WHERE denominacion = ?;";
 						pstmt = con.prepareStatement(sSQL2);
 						pstmt.setString(1, denominacion);
-						rs2 = pstmt.executeQuery(sSQL2);
+						rs2 = pstmt.executeQuery();
 						
 						//Bucle para recorrer las filas que devuelve la consulta
 						while(rs2.next())
@@ -102,7 +102,10 @@ private ConexionBD conexion;
 					{
 						try
 						{
-							rs2.close();
+							 if (rs2 != null) 
+							 {
+						            rs2.close();
+							 }
 							pstmt.close();
 							conexion.desconectar();
 						}
