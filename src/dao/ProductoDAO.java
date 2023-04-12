@@ -74,7 +74,7 @@ private ConexionBD conexion;
 					//Obtenemos conexion a la base de datos.
 					Connection con = conexion.getConexion();
 					PreparedStatement pstmt = null;
-					ResultSet rs2 = pstmt.executeQuery(sSQL2);
+					ResultSet rs2 = null;
 					ArrayList<Producto> lista2 = new ArrayList<Producto>();
 					String sSQL2;
 					
@@ -83,7 +83,7 @@ private ConexionBD conexion;
 						sSQL2 = "SELECT descripcion FROM productos WHERE denominacion = ?;";
 						pstmt = con.prepareStatement(sSQL2);
 						pstmt.setString(1, denominacion);
-						
+						rs2 = pstmt.executeQuery(sSQL2);
 						
 						//Bucle para recorrer las filas que devuelve la consulta
 						while(rs2.next())
