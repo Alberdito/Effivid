@@ -80,7 +80,7 @@ private ConexionBD conexion;
 					
 					try
 					{
-						sSQL2 = "SELECT descripcion FROM productos WHERE denominacion = ?;";
+						sSQL2 = "SELECT descripcion FROM productos WHERE denominacion = ? ORDER BY descripcion ASC;";
 						pstmt = con.prepareStatement(sSQL2);
 						pstmt.setString(1, denominacion);
 						rs2 = pstmt.executeQuery();
