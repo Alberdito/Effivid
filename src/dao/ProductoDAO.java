@@ -69,52 +69,52 @@ private ConexionBD conexion;
 		// ***********************************************************************************************************************
 		
 		//FUNCIÓN MOSTRAR DENOMINACIÓN DEL PRODUCTO
-				public ArrayList <Producto> obtenerProductos(String denominacion)
+			public ArrayList <Producto> obtenerProductos(String denominacion)
+			{
+				//Obtenemos conexion a la base de datos.
+				Connection con = conexion.getConexion();
+				PreparedStatement pstmt = null;
+				ResultSet rs2 = null;
+				ArrayList<Producto> lista2 = new ArrayList<Producto>();
+				String sSQL2;
+				
+				try
 				{
-					//Obtenemos conexion a la base de datos.
-					Connection con = conexion.getConexion();
-					PreparedStatement pstmt = null;
-					ResultSet rs2 = null;
-					ArrayList<Producto> lista2 = new ArrayList<Producto>();
-					String sSQL2;
+					sSQL2 = "SELECT descripcion FROM productos WHERE denominacion = ? ORDER BY descripcion ASC;";
+					pstmt = con.prepareStatement(sSQL2);
+					pstmt.setString(1, denominacion);
+					rs2 = pstmt.executeQuery();
 					
+					//Bucle para recorrer las filas que devuelve la consulta
+					while(rs2.next())
+					{
+						String sDescripcion = rs2.getString("descripcion");
+						
+						Producto produc = new Producto(0, sDescripcion, sDescripcion, sDescripcion, 0);
+						lista2.add(produc);
+					}
+				}
+				catch (SQLException e)
+				{
+					System.out.println("Error al realizar la consulta: " + e.getMessage());
+				}
+				finally
+				{
 					try
 					{
-						sSQL2 = "SELECT descripcion FROM productos WHERE denominacion = ? ORDER BY descripcion ASC;";
-						pstmt = con.prepareStatement(sSQL2);
-						pstmt.setString(1, denominacion);
-						rs2 = pstmt.executeQuery();
-						
-						//Bucle para recorrer las filas que devuelve la consulta
-						while(rs2.next())
-						{
-							String sDescripcion = rs2.getString("descripcion");
-							
-							Producto produc = new Producto(0, sDescripcion, sDescripcion, sDescripcion, 0);
-							lista2.add(produc);
-						}
+						 if (rs2 != null) 
+						 {
+					            rs2.close();
+						 }
+						pstmt.close();
+						conexion.desconectar();
 					}
 					catch (SQLException e)
 					{
-						System.out.println("Error al realizar la consulta: " + e.getMessage());
+						System.out.println("Error al liberar recursos: " + e.getMessage());
 					}
-					finally
-					{
-						try
-						{
-							 if (rs2 != null) 
-							 {
-						            rs2.close();
-							 }
-							pstmt.close();
-							conexion.desconectar();
-						}
-						catch (SQLException e)
-						{
-							System.out.println("Error al liberar recursos: " + e.getMessage());
-						}
-						
-					}
-					return lista2;	
+					
 				}
+				return lista2;	
+			}
 }

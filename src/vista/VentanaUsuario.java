@@ -38,9 +38,9 @@ public class VentanaUsuario extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtRef;
-private ConexionBD conexion;
+	private ConexionBD conexion;
 	
-
+	
 	/**
 	 * Create the frame.
 	 */
@@ -156,42 +156,45 @@ private ConexionBD conexion;
 		
 		JButton btnVer = new JButton("Ver");
 		btnVer.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) 
-			{
-				String iRef;
-				String sProducto;
-				String sModelo;
-				
-				iRef = txtRef.getText();
-				sProducto = cbProducto.getSelectedItem().toString();
-				sModelo = cbModelo.getSelectedItem().toString();
-				
-				System.out.println(iRef);
-				System.out.println(sProducto);
-				System.out.println(sModelo);
-				
-				if (txtRef.equals("") || sProducto.equals("- Seleccione un producto -") || sModelo.equals("- Seleccione el modelo -"))
-				{
-					JOptionPane.showMessageDialog(null,"Rellene alguna de las dos opciones:", "Error", JOptionPane.WARNING_MESSAGE);
-				}
-				
-				
-			}
-		});
-		btnVer.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnVer.setBounds(106, 336, 131, 31);
-		contentPane.add(btnVer);
 		
-		JButton btnCerrar = new JButton("Cerrar");
-		btnCerrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				dispose();
+				
+			String iRef;
+			String sProducto;
+			String sModelo;
+			
+			iRef = txtRef.getText();
+			sProducto = cbProducto.getSelectedItem().toString();
+			sModelo = cbModelo.getSelectedItem().toString();
+			
+			System.out.println(iRef);
+			System.out.println(sProducto);
+			System.out.println(sModelo);
+			
+			if (txtRef.equals("") || sProducto.equals("- Seleccione un producto -") || sModelo.equals("- Seleccione el modelo -"))
+			{
+				JOptionPane.showMessageDialog(null,"Rellene alguna de las dos opciones:", "Error", JOptionPane.WARNING_MESSAGE);
 			}
-		});
-		btnCerrar.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnCerrar.setBounds(311, 336, 131, 31);
-		contentPane.add(btnCerrar);
+			
+			
+			
+		}
+	});
+	btnVer.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	btnVer.setBounds(106, 336, 131, 31);
+	contentPane.add(btnVer);
+	
+	JButton btnCerrar = new JButton("Cerrar");
+	btnCerrar.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) 
+		{
+			dispose();
+		}
+	});
+	btnCerrar.setFont(new Font("Tahoma", Font.PLAIN, 13));
+	btnCerrar.setBounds(311, 336, 131, 31);
+	contentPane.add(btnCerrar);
 		
 		
 	}

@@ -8,6 +8,7 @@ public class Principal {
 		// TODO Auto-generated method stub
 		VentanaUsuario ventana = new VentanaUsuario();
 		ventana.setVisible(true);
+		
 	}
 
 }
