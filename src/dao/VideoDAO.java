@@ -1,3 +1,6 @@
+/**
+ * @author Alberto Peinado Castillo y Andrés Pino
+ */
 package dao;
 
 import java.sql.Connection;
@@ -20,6 +23,11 @@ private ConexionBD conexion;
 	}
 	// *******************************************************************************************
 	//FUNCIÓN MOSTRAR VÍDEOS CON REFERENCIA
+	/**
+	 * Función que devuelve un arraylist con los vídeos pertenecientes a la referencia del producto pasada como parámetro
+	 * @param Ref: número entero que se corresponde con el número de referencia del producto
+	 * @return: devuelve la lista de videos pertenecientes al número de referencia seleccionado
+	 */
 	public ArrayList <Video> obtenerVideos(int Ref)
 	{
 		//Obtenemos conexion a la base de datos.
@@ -31,7 +39,7 @@ private ConexionBD conexion;
 		
 		try
 		{
-			sSQL = "SELECT nombre FROM videos WHERE ref_video = ? ORDER BY nombre ASC;";
+			sSQL = "SELECT nombre FROM videos WHERE ref_producto = ? ORDER BY nombre ASC;";
 			pstmt = con.prepareStatement(sSQL);
 			pstmt.setInt(1, Ref);
 			rs = pstmt.executeQuery();
@@ -73,8 +81,15 @@ private ConexionBD conexion;
 	
 	
 	//**************************************************************************************************
-	//FUNCIÓN MOSTRAR VÍDEOS CON NOMBRE
-		public ArrayList <Video> obtenerVideosNombre(String nombre)
+/*	//FUNCIÓN MOSTRAR VÍDEOS CON NOMBRE
+		/**
+		 * Función que devuelve una lista de videos correspondientes al nombre pasado como parámetro
+		 * @param nombre: String recuperado de un combobox que se corresponde con el nombre del producto del que deseamos ver el vídeo
+		 * @return: lista de videos que se corresponden con el nombre seleccionado en el combobox de la VentanaUsuario
+		 * NOTA: esta funcion esta comentada debido a que para recuperar el nombre correctamente, deberiamos tener todos los videos organizados en carpetas en C:\ con los nombres
+		 * del producto seleccionado
+		 */
+/*		public ArrayList <Video> obtenerVideosNombre(String nombre)
 		{
 			//Obtenemos conexion a la base de datos.
 			Connection con = conexion.getConexion();
@@ -125,11 +140,16 @@ private ConexionBD conexion;
 			}
 			return lista2;	
 		}
+		*/
 		
-	
 		// *********************************************************************************************************
 		//FUNCIÓN INSERTAR VIDEO
-		
+		/**
+		 * Funcion para insertar videos en la base de datos y en la aplicacion
+		 * @param video: el parametro video se corresponde con, una vez hecha la seleccion del video que queremos añadir, los elementos del modelo: video, creando uno nuevo
+		 * 				recuperando todos los parametros necesarios (en este caso nombre y referencia del producto)
+		 * @return: devuelve 1 si el video se ha insertado correctamente y un 0 en caso contrario.
+		 */
 		public int insertarVideo (Video video)
 		{
 			Connection con = conexion.getConexion();
@@ -146,7 +166,7 @@ private ConexionBD conexion;
 				consulta.setInt(2, video.getRef_producto());
 				
 				resultado = consulta.executeUpdate();
-				System.out.println("Fila insertada.");
+				System.out.println("Video insertado.");
 			}
 			catch (SQLException e)
 			{
@@ -170,7 +190,11 @@ private ConexionBD conexion;
 		
 		// **************************************************************************************************************
 		// FUNCIÓN ELIMINAR VIDEO SELECCIONADO 
-		
+		/**
+		 * Funcion para eliminar un video seleccionado
+		 * @param codigo_video: entero numerico que se corresponde con el codigo de video que queremos eliminar
+		 * @return: devuelve un 1 si el video se ha borrado correctamente y un 0 en caso contrario.
+		 */
 		public int eliminarVideo(int codigo_video)
 		{
 			Connection con = conexion.getConexion();
@@ -187,11 +211,11 @@ private ConexionBD conexion;
 				
 				if(resultado != 0)
 				{
-					System.out.println("Fila borrada.");
+					System.out.println("Video borrado.");
 				}
 				else
 				{
-					System.out.println("Inserte fila existente.");
+					System.out.println("Seleccione video para borrar.");
 				}
 			}
 			catch (SQLException e)
