@@ -18,7 +18,7 @@ private ConexionBD conexion;
 	{
 		this.conexion = new ConexionBD();
 	}
-	
+	// *******************************************************************************************
 	//FUNCIÓN MOSTRAR VÍDEOS CON REFERENCIA
 	public ArrayList <Video> obtenerVideos(int Ref)
 	{
@@ -71,6 +71,8 @@ private ConexionBD conexion;
 		return lista;	
 	}
 	
+	
+	//**************************************************************************************************
 	//FUNCIÓN MOSTRAR VÍDEOS CON NOMBRE
 		public ArrayList <Video> obtenerVideosNombre(String nombre)
 		{
@@ -83,7 +85,7 @@ private ConexionBD conexion;
 			
 			try
 			{
-				sSQL2 = "SELECT * FROM videos WHERE nombre = '%?%' ORDER BY nombre ASC;";
+				sSQL2 = "SELECT * FROM videos WHERE nombre LIKE '%?%' ORDER BY nombre ASC;";
 				pstmt2 = con.prepareStatement(sSQL2);
 				pstmt2.setString(1, nombre);
 				rs2 = pstmt2.executeQuery();
@@ -123,4 +125,93 @@ private ConexionBD conexion;
 			}
 			return lista2;	
 		}
+		
+	
+		// *********************************************************************************************************
+		//FUNCIÓN INSERTAR VIDEO
+		
+		public int insertarVideo (Video video)
+		{
+			Connection con = conexion.getConexion();
+			PreparedStatement consulta = null;
+			int resultado = 0;
+			String sSQL;
+			
+			try
+			{
+				sSQL = "INSERT INTO (nombre, ref_producto)" +
+						"VALUES (?,?)";
+				consulta = con.prepareStatement(sSQL);
+				consulta.setString(1, video.getNombre());
+				consulta.setInt(2, video.getRef_producto());
+				
+				resultado = consulta.executeUpdate();
+				System.out.println("Fila insertada.");
+			}
+			catch (SQLException e)
+			{
+				System.out.println("Error al realizar la consulta: " + e.getMessage());
+			}
+			finally
+			{
+				try
+				{
+					consulta.close();
+					conexion.desconectar();
+				}
+				catch (SQLException e)
+				{
+					System.out.println("Error al liberar recursos: " + e.getMessage());
+				}
+			}
+			
+			return resultado;
+		}
+		
+		// **************************************************************************************************************
+		// FUNCIÓN ELIMINAR VIDEO SELECCIONADO 
+		
+		public int eliminarVideo(int codigo_video)
+		{
+			Connection con = conexion.getConexion();
+			PreparedStatement consulta = null;
+			int resultado = 0;
+			String sSQL;
+			
+			try
+			{
+				sSQL = "DELETE FROM libros WHERE codigo_video = ?;";
+				consulta = con.prepareStatement(sSQL);
+				consulta.setInt(1, codigo_video);
+				resultado = consulta.executeUpdate();
+				
+				if(resultado != 0)
+				{
+					System.out.println("Fila borrada.");
+				}
+				else
+				{
+					System.out.println("Inserte fila existente.");
+				}
+			}
+			catch (SQLException e)
+			{
+				System.out.println("Error al realizar el borrado:" + e.getMessage());
+			}
+			finally
+			{
+				try
+				{
+					consulta.close();
+					conexion.desconectar();
+				}
+				catch (SQLException e)
+				{
+					System.out.println("Error al liberar recursos:" + e.getMessage());
+				}
+				
+			}
+			return resultado;
+		}
+		
 }
