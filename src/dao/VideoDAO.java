@@ -47,9 +47,8 @@ private ConexionBD conexion;
 			//Bucle para recorrer las filas que devuelve la consulta
 			while(rs.next())
 			{
-				
-				String sNombre = rs.getString("nombre");
 				int iCod_video = rs.getInt("codigo_video");
+				String sNombre = rs.getString("nombre");
 								
 				Video vid = new Video(iCod_video, sNombre, Ref);
 				lista.add(vid);
