@@ -1,6 +1,13 @@
 package vista;
 import java.awt.EventQueue;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.net.URL;
+import javax.swing.JOptionPane;
+
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -8,10 +15,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JButton;
 import java.awt.Font;
-import java.awt.event.ActionListener;
+import java.awt.Image;
+import java.awt.PageAttributes.MediaType;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,6 +33,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import java.io.*;
+
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -38,6 +47,7 @@ import javax.swing.JScrollPane;
 
 public class VentanaPrueba extends JFrame {
 
+	
 	private JPanel contentPane;
 	private JTextField textArchivo;
 	private JTextField textDestino;
@@ -134,12 +144,37 @@ public class VentanaPrueba extends JFrame {
 		        // Si se selecciona un video, elegir donde guardarlo
 		        if (iSeleccion == JFileChooser.APPROVE_OPTION) 
 		        {
-		        	
-		            archivoSeleccionado = ExploradorArchivos.getSelectedFile();
-		            System.out.println(archivoSeleccionado.getName());
-		            textArchivo.setText(archivoSeleccionado.getName());
-		            
+		        
+		        		archivoSeleccionado = ExploradorArchivos.getSelectedFile();
+			            System.out.println(archivoSeleccionado.getName());
 		        }
+		        
+	        // Si el archivo que deseamos copiar se encuentra en formato .AVI o .avi, se recogerá la ruta del archivo sin más. En caso contrario 
+	        // se abrirá el programa seleccionado abajo para convertir previamente el video a formato .avi
+		        
+		        if (archivoSeleccionado.getName().contains(".AVI") || archivoSeleccionado.getName().contains(".avi"))
+	        	{
+	            	textArchivo.setText(archivoSeleccionado.getName());
+	        	}
+	            else
+	            {
+	       
+	            	try 
+	            	{
+	/**
+	 * A continuación se muestra la ruta del programa necesario para la conversion y compresion de los videos (en nuestro caso Prism), que habra que descargar
+	 * y cambiar la ruta abajo indicada por la ruta en la que tengamos nuestro .exe (Se establece a la hora de instalar el programa descargado.
+	 * Este programa puede ser sustituido por cualquier otro apto para cambiar formato de video.
+	 */
+	            		
+        		    String rutaApp = "C:\\Program Files (x86)\\NCH Software\\Prism\\Prism.exe";
+        		    Runtime.getRuntime().exec(rutaApp);
+	            	} 
+	            	catch (IOException e2) 
+	            	{
+	            		e2.printStackTrace();
+	            	}
+	            }
 			        
 			}
 		});
@@ -215,13 +250,13 @@ public class VentanaPrueba extends JFrame {
 					sNombreArchivoCompleto = sDestino + sExtension;
 
 					System.out.println("La ruta completa del archivo es: " + sNombreArchivoCompleto);
-				
-					// Copiar el archivo seleccionado a la nueva ubicación
+
+				// Copiar el archivo seleccionado a la nueva ubicación
 					try 
 					{
 						Path fuente = Paths.get(archivoSeleccionado.getAbsolutePath());
-					    Path destino = Paths.get(sNombreArchivoCompleto);
-		
+						Path destino = Paths.get(sNombreArchivoCompleto);
+					      
 					    BarraProgreso ventana = new BarraProgreso(fuente, archivoSeleccionado, sNombreArchivoCompleto);
 					    ventana.setVisible(true);
 					    
@@ -232,12 +267,12 @@ public class VentanaPrueba extends JFrame {
 					{
 					    System.out.println("Error al copiar el archivo: " + e2.getMessage());
 					} 
-					
-				 }
 				
-					textArchivo.setText("");
-					textDestino.setText("");
-				  
+				}
+			
+				textArchivo.setText("");
+				textDestino.setText("");
+			  
 			 }
 		});
 		btnGuardar.setFont(new Font("Tahoma", Font.PLAIN, 14));
