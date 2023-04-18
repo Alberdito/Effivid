@@ -131,6 +131,7 @@ public class VentanaPrueba extends JFrame {
 				//SELECCIONAR VIDEO A INSERTAR
 								
 				int iSeleccion;
+				int iRespuesta;
 				
 		        JFileChooser ExploradorArchivos = new JFileChooser();
 		        FileNameExtensionFilter filtro = new FileNameExtensionFilter("Archivos de video", "mp4", "avi", "mov", "wmv", "flv","mkv");
@@ -144,12 +145,11 @@ public class VentanaPrueba extends JFrame {
 		        // Si se selecciona un video, elegir donde guardarlo
 		        if (iSeleccion == JFileChooser.APPROVE_OPTION) 
 		        {
-		        
 		        		archivoSeleccionado = ExploradorArchivos.getSelectedFile();
 			            System.out.println(archivoSeleccionado.getName());
 		        }
 		        
-	        // Si el archivo que deseamos copiar se encuentra en formato .AVI o .avi, se recogerá la ruta del archivo sin más. En caso contrario 
+	        // Si el archivo que deseamos copiar se encuentra en formato .AVI o .avi, se recogerá la ruta del archivo. En caso contrario 
 	        // se abrirá el programa seleccionado abajo para convertir previamente el video a formato .avi
 		        
 		        if (archivoSeleccionado.getName().contains(".AVI") || archivoSeleccionado.getName().contains(".avi"))
@@ -158,21 +158,29 @@ public class VentanaPrueba extends JFrame {
 	        	}
 	            else
 	            {
-	       
-	            	try 
+	            	
+	            	iRespuesta = JOptionPane.showConfirmDialog(null, "El vídeo seleccionado no está en formato .AVI ¿desea convertirlo?", "Advertencia", JOptionPane.YES_NO_OPTION);
+	            	if(iRespuesta == JOptionPane.YES_OPTION)
 	            	{
-	/**
-	 * A continuación se muestra la ruta del programa necesario para la conversion y compresion de los videos (en nuestro caso Prism), que habra que descargar
-	 * y cambiar la ruta abajo indicada por la ruta en la que tengamos nuestro .exe (Se establece a la hora de instalar el programa descargado.
-	 * Este programa puede ser sustituido por cualquier otro apto para cambiar formato de video.
-	 */
-	            		
-        		    String rutaApp = "C:\\Program Files (x86)\\NCH Software\\Prism\\Prism.exe";
-        		    Runtime.getRuntime().exec(rutaApp);
-	            	} 
-	            	catch (IOException e2) 
+	            		try 
+		            	{
+		/**
+		 * A continuación se muestra la ruta del programa necesario para la conversion y compresion de los videos (en nuestro caso FreeMake VC), que habra que descargar
+		 * y cambiar la ruta abajo indicada por la ruta en la que tengamos nuestro .exe (Se establece a la hora de instalar el programa descargado y recomendamos hacerlo
+		 * directamente en C:\\). Este programa puede ser sustituido por cualquier otro apto para cambiar formato de video.
+		 */
+	        		    String rutaApp = "C:\\Freemake\\Freemake Video Converter\\FreemakeVC.exe";
+	        		    Runtime.getRuntime().exec(rutaApp);
+	        		    
+		            	} 
+		            	catch (IOException e2) 
+		            	{
+		            		e2.printStackTrace();
+		            	}
+	            	}
+	            	else
 	            	{
-	            		e2.printStackTrace();
+	            		dispose();
 	            	}
 	            }
 			        
@@ -189,7 +197,6 @@ public class VentanaPrueba extends JFrame {
 				//GUARDADO DEL VIDEO SELECCIONADO
 			       
 		        JFileChooser ExploradorArchivos2 = new JFileChooser();
-		        File RutaVideo;
 		        int iSeleccionado;
 		        String ArchivoCopiado;
 		        
