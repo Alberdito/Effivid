@@ -4,8 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import javax.swing.*;
 import java.awt.*;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+
 import javax.swing.border.EmptyBorder;
 import java.awt.Toolkit;
 import javax.swing.border.LineBorder;
@@ -92,37 +91,46 @@ public class VentanaLogin extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String sUsuario;
-				int iContrasena;
+				String sContrasena;
 				PersonaDAO personaDAO;
 				
+				
 				sUsuario = textUsuario.getText();
-				 try 
+				sContrasena = textPassword.getText();
+				
+				 if(sUsuario.equals("") || sContrasena.equals(""))
 				 {
-				        iContrasena = Integer.parseInt(textPassword.getText().toString());
-				 } 
-				 catch (NumberFormatException ex) 
-				 {
-				        JOptionPane.showMessageDialog(null, "La contraseña debe contener solo números");
-				        return;
+		        	System.out.println("El campo de usuario está vacío"); 
+					 JOptionPane.showMessageDialog(null, "Los campos Usuario y Contraseña deben estar rellenos", "Error", JOptionPane.WARNING_MESSAGE);
+					 return;
 				 }
 				
-				personaDAO= new PersonaDAO();
-				boolean loginValido = personaDAO.validarLogin(iContrasena, sUsuario);
-				
-		        if (loginValido)
-		        {
-		            // si el login es válido, abrir la ventana principal
-		            VentanaUsuario ventana = new VentanaUsuario();
-		            ventana.setVisible(true);
-		            // cerrar la ventana de login
-		            dispose();
-		        } 
-		        else 
-		        {
-		            // si el login es inválido
-		            JOptionPane.showMessageDialog(null, "Usuario o contraseña inválidos");
-		        }
-				
+				 try 
+				 {
+					 	int iContrasena = Integer.valueOf(sContrasena);
+					 	personaDAO= new PersonaDAO();
+						boolean loginValido = personaDAO.validarLogin(iContrasena, sUsuario);
+						
+				        if (loginValido)
+				        {
+				            // si el login es válido, abrir la ventana principal
+				            VentanaUsuario ventana = new VentanaUsuario();
+				            ventana.setVisible(true);
+				            // cerrar la ventana de login
+				            dispose();
+				        } 
+				        else 
+				        {
+				            // si el login es inválido
+				            JOptionPane.showMessageDialog(null, "Usuario o contraseña inválidos");
+				        }
+				 } 
+				 catch (NumberFormatException ex) 
+				 	{
+					 	// Controlar que la contraseña solo pueda contener números
+						 JOptionPane.showMessageDialog(null, "La contraseña debe contener solo números");
+						 return;      
+				 	}
 				}
 			});
 		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 15));
