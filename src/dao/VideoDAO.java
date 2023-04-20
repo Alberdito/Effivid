@@ -237,4 +237,53 @@ private ConexionBD conexion;
 			return resultado;
 		}
 		
+		// ******************************************************************************************************
+		// MODIFICAR PUESTO DE VIDEO
+		/**
+		 * Función que modifica el puesto de un video pasado como referencia
+		 * @param puesto : puesto a modificar
+		 * @param codigo_video: codigo perteneciente al video del que queremos cambiar el puesto
+		 * @return: devuelve 1 si se ha modificado el video o 0 en caso contrario.
+		 */
+		
+		public int actualizarVideo (int puesto, int codigo_video)
+		{
+			Connection con = conexion.getConexion();
+			PreparedStatement consulta = null;
+			int resultado = 0;
+			String sSQL;
+			
+			try
+			{
+				sSQL = "UPDATE videos SET puesto = ?, " +
+					   "WHERE codigo_video = ?";
+				consulta = con.prepareStatement(sSQL);
+				consulta.setInt(1, puesto);
+				consulta.setInt(2, codigo_video);
+				
+				resultado = consulta.executeUpdate();
+				
+				if (resultado != 0)
+				{
+					System.out.println("Video actualizada");
+				}
+			}
+			catch (SQLException e)
+			{
+				System.out.println("Error al realizar la actualización: " + e.getMessage());
+			}
+			finally
+			{
+				try
+				{
+					consulta.close();
+					conexion.desconectar();
+				}
+				catch(SQLException e)
+				{
+					System.out.println("Error al liberar recursos: " + e.getMessage());
+				}
+			}
+			return resultado;
+		}
 }

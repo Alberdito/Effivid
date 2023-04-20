@@ -1,4 +1,5 @@
 package vista;
+import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import java.awt.event.ActionEvent;
@@ -147,12 +148,13 @@ public class VentanaPrueba extends JFrame {
 		        {
 		        		archivoSeleccionado = ExploradorArchivos.getSelectedFile();
 			            System.out.println(archivoSeleccionado.getName());
+			            textArchivo.setText(archivoSeleccionado.getName());
 		        }
 		        
 	        // Si el archivo que deseamos copiar se encuentra en formato .AVI o .avi, se recogerá la ruta del archivo. En caso contrario 
 	        // se abrirá el programa seleccionado abajo para convertir previamente el video a formato .avi
 		        
-		        if (archivoSeleccionado.getName().contains(".AVI") || archivoSeleccionado.getName().contains(".avi"))
+	/*	        if (archivoSeleccionado.getName().contains(".AVI") || archivoSeleccionado.getName().contains(".avi"))
 	        	{
 	            	textArchivo.setText(archivoSeleccionado.getName());
 	        	}
@@ -169,7 +171,7 @@ public class VentanaPrueba extends JFrame {
 		 * y cambiar la ruta abajo indicada por la ruta en la que tengamos nuestro .exe (Se establece a la hora de instalar el programa descargado y recomendamos hacerlo
 		 * directamente en C:\\). Este programa puede ser sustituido por cualquier otro apto para cambiar formato de video.
 		 */
-	        		    String rutaApp = "C:\\Freemake\\Freemake Video Converter\\FreemakeVC.exe";
+	        /*		    String rutaApp = "C:\\Freemake\\Freemake Video Converter\\FreemakeVC.exe";
 	        		    Runtime.getRuntime().exec(rutaApp);
 	        		    
 		            	} 
@@ -182,7 +184,7 @@ public class VentanaPrueba extends JFrame {
 	            	{
 	            		dispose();
 	            	}
-	            }
+	            }*/
 			        
 			}
 		});
@@ -241,6 +243,7 @@ public class VentanaPrueba extends JFrame {
 				String sExtension;
 				String sDestino;
 				String sNombreArchivoCompleto;
+				String sExtensionNueva =".mp4";
 				
 				if(textArchivo.getText().equals("") || textDestino.getText().equals(""))
 				{
@@ -263,10 +266,94 @@ public class VentanaPrueba extends JFrame {
 					{
 						Path fuente = Paths.get(archivoSeleccionado.getAbsolutePath());
 						Path destino = Paths.get(sNombreArchivoCompleto);
-					      
-					    BarraProgreso ventana = new BarraProgreso(fuente, archivoSeleccionado, sNombreArchivoCompleto);
-					    ventana.setVisible(true);
 					    
+						
+						 Files.copy(fuente, destino, StandardCopyOption.REPLACE_EXISTING);
+						    
+							//String inputFilePath = archivoSeleccionado.getAbsolutePath();
+						    String sNombreArchivoNuevo = sDestino + sExtensionNueva;
+						    
+							String cmd ="cmd.exe /c ";
+							String ruta = "C:\\JAVA\\Effivid_2\\ffmpeg\\bin\\ffmpeg -i \"" + destino.toString() + "\" -c:v libx264 -b:v 1.5M -c:a aac -b:a 128k \"" + sNombreArchivoNuevo + "\"";
+							//System.out.println(cmd);
+							//Process process = Runtime.getRuntime().exec(cmd+ruta);
+							//process.waitFor();
+							BarraConversión ventana = new BarraConversión();
+						    ventana.setVisible(true);
+						    
+						    Process process = Runtime.getRuntime().exec( cmd + ruta);
+						    
+						    try {
+								
+								BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+								String line = "";
+								while ((line = reader.readLine()) != null) {
+									
+									if (line.contains("frame=")) {
+										String[] tokens = line.split(" ");
+										String[] progress = tokens[2].split("=");
+										int value = Integer.parseInt(progress[1].replace(",", ""));
+										progressBar.setValue(value);
+									}
+								}
+							} catch (IOException e2) {
+								e2.printStackTrace();
+							}
+							
+							// ****************************************************************************************************
+							
+							
+							
+							getContentPane().add(progressBar, BorderLayout.CENTER);
+							
+							ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", "start", "\"\"", "C:\\JAVA\\Effivid_2\\ffmpeg\\bin\\ffmpeg", "-i", destino.toString(), "-c:v", "libx264", "-b:v", "1.5M", "-c:a", "aac", "-b:a", "128k", sNombreArchivoNuevo);
+							pb.redirectErrorStream(true);
+							Process p = pb.start();
+							BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+							String line;
+							while ((line = br.readLine()) != null) {
+							    // Actualiza el valor de la barra de progreso
+							    if (line.startsWith("frame=")) {
+							        String[] parts = line.split(" ");
+							        int totalFrames = Integer.parseInt(parts[2]);
+							        int currentFrame = Integer.parseInt(parts[0].substring(6));
+							        int progress = (int)(((double)currentFrame / totalFrames) * 100);
+							        progressBar.setValue(progress);
+							    }
+							}
+							
+							// ****************************************************************************************************
+							
+						/*	System.out.print(sExtension);
+							if (!sExtension.equalsIgnoreCase(".mp4")) {
+								try {
+								    ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", "start", "\"\"", "C:\\JAVA\\Effivid_2\\ffmpeg\\bin\\ffmpeg", "-i", destino.toString(), "-c:v", "libx264", "-b:v", "1.5M", "-c:a", "aac", "-b:a", "128k", sNombreArchivoNuevo);
+									pb.redirectErrorStream(true);
+								    Process p = pb.start();
+								    BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+								    String line;
+								    while ((line = br.readLine()) != null) {
+								        System.out.println(line);
+								    }*/
+								   
+								} catch (IOException e1) {
+								    e1.printStackTrace();
+								}
+								//borrar archivo antiguo
+					/*			String filePath = destino.toString();
+						        File file = new File(filePath);
+						        
+						        if (file.delete()) {
+						            System.out.println("El archivo anterior se borró exitosamente.");
+						        } else {
+						            System.out.println("El archivo no se pudo borrar.");
+						        }
+							}
+							dispose();
+							
+					    /*BarraProgreso ventana = new BarraProgreso(ruta);
+					    ventana.setVisible(true);
+					   
 					    Files.copy(fuente, destino, StandardCopyOption.REPLACE_EXISTING);
 					    System.out.println("Archivo copiado.");
 					} 
@@ -274,7 +361,7 @@ public class VentanaPrueba extends JFrame {
 					{
 					    System.out.println("Error al copiar el archivo: " + e2.getMessage());
 					} 
-				
+				 */
 				}
 			
 				textArchivo.setText("");
